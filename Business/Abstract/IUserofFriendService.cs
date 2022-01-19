@@ -1,4 +1,6 @@
-﻿using Entities.Concrete;
+﻿using Core.Utilities.Results.Abstract;
+using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +11,7 @@ namespace Business.Abstract
 {
     public interface IUserofFriendService:IBaseService<UserofFriend>
     {
+       IDataResult<List<DtoUserFriends>> GetUserFriends(int userId);
+        IResult Delete(UserofFriend item);
     }
 }

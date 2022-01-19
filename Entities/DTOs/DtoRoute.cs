@@ -1,16 +1,16 @@
 ﻿using Core.Entities.Abstract;
+using Entities.Concrete;
 using NetTopologySuite.Geometries;
 
-namespace Entities.Concrete
+namespace Entities.DTOs
 {
-    public class RouteOfUser : IEntity
+    public class DtoRoute : IDto
     {
         public int id { get; set; }
         public int userid { get; set; }
         public DateTime routestartdate { get; set; } = DateTime.UtcNow;
-        public Geometry firstpoint { get; set; }
+        public UserPoint firstpoint { get; set; }
 
-        public Geometry lastpoint { get; set; }
-        public bool visibility { get; set; }
+        public UserPoint lastpoint { get; set; }
     }
 }

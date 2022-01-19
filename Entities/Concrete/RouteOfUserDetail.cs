@@ -7,10 +7,8 @@ namespace Entities.Concrete
     {
         public int id { get; set; }
         public int routeid { get; set; }
-
-        //     [Column(TypeName = "geometry (point)")]
         public Geometry? route { get; set; }
-        public DateTime routetime { get; set; }
+        public TimeOnly routetime { get; set; }
 
     }
 }

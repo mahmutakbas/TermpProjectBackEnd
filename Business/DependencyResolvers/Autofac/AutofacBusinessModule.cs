@@ -18,8 +18,12 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<RouteOfUsersManager>().As<IRouteOfUserService>().SingleInstance();
             builder.RegisterType<EfRoutesOfUsersDal>().As<IRoutesOfUsersDal>().SingleInstance();
+            
             builder.RegisterType<RouteOfUserDetailManager>().As<IRouteOfUserDetailService>().SingleInstance();
             builder.RegisterType<EfRouteOfUserDetailDal>().As<IRouteOfUserDetailDal>().SingleInstance();
+
+            builder.RegisterType<UserofFrinedManager>().As<IUserofFriendService>().SingleInstance();
+            builder.RegisterType<EfUserofFriendsDal>().As<IUserofFriendsDal>().SingleInstance();
 
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();

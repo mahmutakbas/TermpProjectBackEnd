@@ -3,11 +3,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -43,6 +39,13 @@ namespace Business.Concrete
         public IDataResult<UserofFriend> GetById(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public IDataResult< List<DtoUserFriends>> GetUserFriends(int userId)
+        {
+            var result = _userofFriendsDal.GetFriendList(userId);
+
+            return new SuccessDataResult<List<DtoUserFriends>>(result);
         }
 
         public IResult Update(UserofFriend item)

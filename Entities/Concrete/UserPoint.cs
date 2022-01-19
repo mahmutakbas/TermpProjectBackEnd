@@ -5,15 +5,15 @@ using System.Text.Json.Serialization;
 namespace Entities.Concrete
 {
   
-    public class UserPoint : NetTopologySuite.Geometries.Point
+    public class UserPoint 
     {
-        const int GoogleMapsSRID = 4326;
-        [JsonConstructor]
-        public UserPoint(double latitude, double longitude)
-            : base(x: longitude, y: latitude) =>
-              base.SRID = GoogleMapsSRID;
-
-      
-
+        public const int GoogleMapsSRID = 4326;
+        public double X { get; set; }
+        public double Y { get; set; }
+        public UserPoint(double x,double y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }

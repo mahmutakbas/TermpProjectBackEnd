@@ -5,6 +5,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -57,7 +58,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<RouteOfUser>>(_routesOfUsersDal.GetAll());
         }
 
-
+        public IDataResult<List<DtoRoute>> GetRoutes(int userId)
+        {
+            return new SuccessDataResult<List<DtoRoute>>(_routesOfUsersDal.GetRoutes(userId));
+        }
         // [PerformanceAspect(5)]
         public IDataResult<RouteOfUser> GetById(int id)
         {

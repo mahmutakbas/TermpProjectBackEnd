@@ -3,6 +3,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -33,7 +34,7 @@ namespace Business.Concrete
             return new SuccessDataResult<int[]>(result);
         }
 
-        public IResult Delete(RouteOfUserDetail route)
+        public IResult Delete(int routeId)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +47,13 @@ namespace Business.Concrete
         public IDataResult<RouteOfUserDetail> GetById(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public IDataResult<List<DtoRouteDetail>> GetRouteDetails(int routeId)
+        {
+            var result = _routeOfUserDetailDal.GetRouteDetails(routeId);
+            if (result.Count > 0) { return new SuccessDataResult<List<DtoRouteDetail>>(result); }
+            return new ErrorDataResult<List<DtoRouteDetail>>();
         }
 
         public IResult Update(RouteOfUserDetail route)

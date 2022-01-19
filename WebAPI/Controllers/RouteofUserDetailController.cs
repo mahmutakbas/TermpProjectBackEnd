@@ -38,6 +38,16 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        [HttpGet("getroutedetail")]
+        public IActionResult GetRouteDetails(int routeid)
+        {
+            var result = _routeOfUserDetailService.GetRouteDetails(routeid);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
         [HttpPost("add")]
         public IActionResult Add(dynamic routeDetail)
@@ -62,6 +72,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+       
 
     }
 }

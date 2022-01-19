@@ -40,10 +40,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {
             var result = _userService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetUsersByEmail")]
+        public IActionResult GetUsers(string email)
+        {
+            var result = _userService.GetUsers(email);
             if (result.Success)
             {
                 return Ok(result);

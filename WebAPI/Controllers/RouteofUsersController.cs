@@ -16,9 +16,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet()]
-        public IActionResult GetAll()
+        public IActionResult GetRoutes(int userId)
         {
-            var result = _routeOfUsersService.GetAll();
+            var result = _routeOfUsersService.GetRoutes(userId);
             if (result.Success)
             {
                 return Ok(result);
@@ -56,9 +56,16 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(RouteOfUser route)
+        public IActionResult Delete(dynamic route)
         {
-            var result = _routeOfUsersService.Delete(route);
+            var result = _routeOfUsersService.Delete(new RouteOfUser
+            {
+                id = (int)route.id.Value,
+                userid = (int)route.userid.Value,
+                routestartdate = DateTime.UtcNow,
+                firstpoint = new GeometryFactory().CreatePoint(new Coordinate(route.firstpoint.x.Value, route.firstpoint.y.Value)),
+                lastpoint = new GeometryFactory().CreatePoint(new Coordinate(route.lastpoint.x.Value, route.lastpoint.y.Value))
+            });
             if (result.Success)
             {
                 return Ok(result);
@@ -67,9 +74,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("update")]
-        public IActionResult Update(RouteOfUser route)
+        public IActionResult Update(dynamic route)
         {
-            var result = _routeOfUsersService.Update(route);
+
+            var result = _routeOfUsersService.Update(new RouteOfUser
+            {
+                id = (int) route.id.Value,
+                userid = (int)(route.userid.Value),
+                routestartdate = DateTime.UtcNow,
+                firstpoint = new GeometryFactory().CreatePoint(new Coordinate(route.firstpoint.x.Value, route.firstpoint.y.Value)),
+                lastpoint = new GeometryFactory().CreatePoint(new Coordinate(route.lastpoint.x.Value, route.lastpoint.y.Value)),
+                visibility =(bool)(route.visibility.Value),
+            });
             if (result.Success)
             {
                 return Ok(result);

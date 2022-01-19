@@ -7,6 +7,6 @@ namespace DataAccess.Abstract
 {
     public interface IUserDal : IEntityRepository<User>
     {
-        List<DtoUser> GetDtoUsers(); 
+        List<DtoUser> GetDtoUsers();
     }
 }

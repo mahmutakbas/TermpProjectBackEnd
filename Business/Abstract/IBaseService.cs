@@ -8,6 +8,6 @@ namespace Business.Abstract
         IDataResult<List<T>> GetAll();
         IDataResult<int> Add(T item);
         IResult Update(T item);
-        IResult Delete(T item);
+       
     }
 }
