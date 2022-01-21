@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
                 new RouteOfUserDetail
                 {
                     routeid = Convert.ToInt32(items[i].routeId.Value),
-                    routetime = DateTime.Parse(items[i].routetime.Value).ToUniversalTime(),
+                    routetime = TimeOnly.Parse(items[i].routetime.Value),
                     route = new GeometryFactory().CreatePoint(new Coordinate(items[i].route.x.Value, items[i].route.y.Value))
                 });
             }

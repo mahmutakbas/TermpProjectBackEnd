@@ -18,11 +18,22 @@ namespace Business.Concrete
         public IDataResult<int> Add(UserofFriend item)
         {
             var result = _userofFriendsDal.Add(item);
-            if (result <= 0)
+
+            if (result > 0)
             {
-                return new ErrorDataResult<int>(result);
+                var result1 = _userofFriendsDal.Add(new UserofFriend { userid = item.friendid, friendid = item.userid });
+                if (result1 > 0)
+                {
+                    return new SuccessDataResult<int>(result);
+                }
+                else
+                {
+                    return new ErrorDataResult<int>(result1);
+
+                }
             }
-            return new SuccessDataResult<int>(result);
+            return new ErrorDataResult<int>(result);
+
         }
 
         public IResult Delete(UserofFriend item)
@@ -41,7 +52,7 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public IDataResult< List<DtoUserFriends>> GetUserFriends(int userId)
+        public IDataResult<List<DtoUserFriends>> GetUserFriends(int userId)
         {
             var result = _userofFriendsDal.GetFriendList(userId);
 

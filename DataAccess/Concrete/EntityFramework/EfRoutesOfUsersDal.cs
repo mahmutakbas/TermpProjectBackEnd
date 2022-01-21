@@ -12,7 +12,8 @@ namespace DataAccess.Concrete.EntityFramework
         public List<DtoRoute> GetRoutes(int userId)
         {
             using (TermProjectDbContext contex = new TermProjectDbContext())
-            {
+            { 
+                // TODO : Yarın distinc kodu ile mesafe bulacağız ve bunu line çevireceğiz.
                 var routeList = (from r in contex.RouteOfUsers
                                  where r.userid == userId
                                  orderby r.routestartdate descending
