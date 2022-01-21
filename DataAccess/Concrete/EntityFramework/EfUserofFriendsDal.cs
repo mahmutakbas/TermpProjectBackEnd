@@ -15,7 +15,7 @@ namespace DataAccess.Concrete.EntityFramework
             {
                 var list = (from u in context.Users
                             join f in context.UserofFriends on u.id equals f.userid
-                            where u.id == userId
+                            where f.friendid == userId
                             select new DtoUserFriends
                             {
                                 id = f.friendid,
