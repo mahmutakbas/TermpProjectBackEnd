@@ -39,6 +39,8 @@ namespace Business.Concrete
         public IResult Delete(UserofFriend item)
         {
             _userofFriendsDal.Delete(item);
+           var result= _userofFriendsDal.Get(f => f.userid == item.friendid && f.friendid == item.userid);
+            _userofFriendsDal.Delete(result);
             return new SuccessResult();
         }
 
