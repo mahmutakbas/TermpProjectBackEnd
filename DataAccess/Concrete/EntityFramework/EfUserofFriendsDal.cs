@@ -18,7 +18,7 @@ namespace DataAccess.Concrete.EntityFramework
                             where f.friendid == userId
                             select new DtoUserFriends
                             {
-                                id = f.friendid,
+                                id = u.id,
                                 friendId=f.id,
                                 name = u.name,
                                 surname = u.surname,
