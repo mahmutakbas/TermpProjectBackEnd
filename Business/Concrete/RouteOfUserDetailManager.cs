@@ -4,6 +4,7 @@ using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using GeoJSON.Net.Geometry;
 
 namespace Business.Concrete
 {
@@ -39,6 +40,11 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
+        public IDataResult<RouteOfUserDetail> Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public IDataResult<List<RouteOfUserDetail>> GetAll()
         {
             throw new NotImplementedException();
@@ -49,11 +55,17 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public IDataResult<List<DtoRouteDetail>> GetRouteDetails(int routeId)
+        public IDataResult<List<RouteOfUserDetail>> GetRouteDetails(int routeId)
         {
             var result = _routeOfUserDetailDal.GetRouteDetails(routeId);
-            if (result.Count > 0) { return new SuccessDataResult<List<DtoRouteDetail>>(result); }
-            return new ErrorDataResult<List<DtoRouteDetail>>();
+            
+            if (result.Count > 0) { return new SuccessDataResult<List<RouteOfUserDetail>>(result); }
+            return new ErrorDataResult<List<RouteOfUserDetail>>();
+        }
+
+        public IDataResult<DtoPointsLine> GetRouteLine(int routeId)
+        {
+           return new SuccessDataResult<DtoPointsLine>(_routeOfUserDetailDal.GetRouteDetailLine(routeId));
         }
 
         public IResult Update(RouteOfUserDetail route)

@@ -1,5 +1,5 @@
 ﻿using Core.Entities.Abstract;
-using NetTopologySuite.Geometries;
+
 
 namespace Entities.Concrete
 {
@@ -7,8 +7,8 @@ namespace Entities.Concrete
     {
         public int id { get; set; }
         public int routeid { get; set; }
-        public Geometry? route { get; set; }
-        public TimeOnly routetime { get; set; }
+        public GeoJSON.Net.Geometry.Point? route { get; set; }
+        public TimeSpan routetime { get; set; }
 
     }
 }

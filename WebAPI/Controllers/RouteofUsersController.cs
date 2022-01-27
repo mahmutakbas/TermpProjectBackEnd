@@ -1,7 +1,8 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using NetTopologySuite.Geometries;
+
 
 namespace WebAPI.Controllers
 {
@@ -15,10 +16,21 @@ namespace WebAPI.Controllers
             _routeOfUsersService = routeService;
         }
 
-        [HttpGet()]
+        [HttpGet("getuserroutes")]
         public IActionResult GetRoutes(int userId)
         {
             var result = _routeOfUsersService.GetRoutes(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+        [HttpGet("getotheruserroutes")]
+        public IActionResult GetOtherUserRoutes(int userId)
+        {
+            var result = _routeOfUsersService.GetOtherUserRoutes(userId);
             if (result.Success)
             {
                 return Ok(result);
@@ -39,15 +51,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Add(dynamic route)
+        public IActionResult Add(RouteOfUser route)
         {
-            var result = _routeOfUsersService.Add(new RouteOfUser
-            {
-                userid = (int)route.userid.Value,
-                routestartdate = DateTime.UtcNow,
-                firstpoint = new GeometryFactory().CreatePoint(new Coordinate(route.firstpoint.x.Value, route.firstpoint.y.Value)),
-                lastpoint = new GeometryFactory().CreatePoint(new Coordinate(route.lastpoint.x.Value, route.lastpoint.y.Value))
-            });
+            var result = _routeOfUsersService.Add(route); ;
             if (result.Success)
             {
                 return Ok(result);
@@ -56,15 +62,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(dynamic route)
+        public IActionResult Delete(DtoRouteDelete route)
         {
             var result = _routeOfUsersService.Delete(new RouteOfUser
             {
-                id = (int)route.id.Value,
-                userid = (int)route.userid.Value,
-                routestartdate = DateTime.UtcNow,
-                firstpoint = new GeometryFactory().CreatePoint(new Coordinate(route.firstpoint.x.Value, route.firstpoint.y.Value)),
-                lastpoint = new GeometryFactory().CreatePoint(new Coordinate(route.lastpoint.x.Value, route.lastpoint.y.Value))
+                id = route.id,
+                userid = route.userid
             });
             if (result.Success)
             {
@@ -74,17 +77,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("update")]
-        public IActionResult Update(dynamic route)
+        public IActionResult Update(DtoRouteUpdate route)
         {
-
             var result = _routeOfUsersService.Update(new RouteOfUser
             {
-                id = (int) route.id.Value,
-                userid = (int)(route.userid.Value),
-                routestartdate = DateTime.UtcNow,
-                firstpoint = new GeometryFactory().CreatePoint(new Coordinate(route.firstpoint.x.Value, route.firstpoint.y.Value)),
-                lastpoint = new GeometryFactory().CreatePoint(new Coordinate(route.lastpoint.x.Value, route.lastpoint.y.Value)),
-                visibility =(bool)(route.visibility.Value),
+                id = route.id,
+                visibility = route.visibility,
             });
             if (result.Success)
             {

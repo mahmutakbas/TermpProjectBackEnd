@@ -1,7 +1,6 @@
 using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.Utilities.IoC;
-using NetTopologySuite.IO.Converters;
 
 namespace WebAPI
 {

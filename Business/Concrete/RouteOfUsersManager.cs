@@ -11,9 +11,9 @@ namespace Business.Concrete
 {
     public class RouteOfUsersManager : IRouteOfUserService
     {
-        IRoutesOfUsersDal _routesOfUsersDal;
+        IRouteOfUserDal _routesOfUsersDal;
 
-        public RouteOfUsersManager(IRoutesOfUsersDal routesOfUsersDal)
+        public RouteOfUsersManager(IRouteOfUserDal routesOfUsersDal)
         {
             _routesOfUsersDal = routesOfUsersDal;
         }
@@ -65,9 +65,18 @@ namespace Business.Concrete
         // [PerformanceAspect(5)]
         public IDataResult<RouteOfUser> GetById(int id)
         {
-            return new SuccessDataResult<RouteOfUser>(_routesOfUsersDal.Get(b => b.id == id));
+         return new SuccessDataResult<RouteOfUser>(_routesOfUsersDal.Get( id));
+           
         }
 
+        public IDataResult<RouteOfUser> Get(int id)
+        {
+            throw new NotImplementedException();
+        }
 
+        public IDataResult<List<DtoRoute>> GetOtherUserRoutes(int userid)
+        {
+            return new SuccessDataResult<List<DtoRoute>>(_routesOfUsersDal.GetOtherUserRoutes(userid));
+        }
     }
 }

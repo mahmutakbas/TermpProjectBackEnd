@@ -2,12 +2,13 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfUserDal : EfEntityRepositoryBase<User, TermProjectDbContext>, IUserDal
+    public class EfUserDal : EfEntityRepositoryBase<User, TermProjectDbContext>//, IUserDal
     {
         public List<DtoUser> GetDtoUsers()
         {

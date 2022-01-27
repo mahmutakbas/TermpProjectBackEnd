@@ -6,6 +6,7 @@ using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
 using DataAccess.Abstract;
+using DataAccess.Concrete.Dapper;
 using DataAccess.Concrete.EntityFramework;
 
 namespace Business.DependencyResolvers.Autofac
@@ -17,16 +18,16 @@ namespace Business.DependencyResolvers.Autofac
 
 
             builder.RegisterType<RouteOfUsersManager>().As<IRouteOfUserService>().SingleInstance();
-            builder.RegisterType<EfRoutesOfUsersDal>().As<IRoutesOfUsersDal>().SingleInstance();
-            
+            builder.RegisterType<DpRouteOfUserDal>().As<IRouteOfUserDal>().SingleInstance();
+
             builder.RegisterType<RouteOfUserDetailManager>().As<IRouteOfUserDetailService>().SingleInstance();
-            builder.RegisterType<EfRouteOfUserDetailDal>().As<IRouteOfUserDetailDal>().SingleInstance();
+            builder.RegisterType<DpRouteOfUserDetailDal>().As<IRouteOfUserDetailDal>().SingleInstance();
 
             builder.RegisterType<UserofFrinedManager>().As<IUserofFriendService>().SingleInstance();
-            builder.RegisterType<EfUserofFriendsDal>().As<IUserofFriendsDal>().SingleInstance();
+            builder.RegisterType<DpUserOfFriendDal>().As<IUserofFriendDal>().SingleInstance();
 
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
-            builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
+            builder.RegisterType<DpUserDal>().As<IUserDal>().SingleInstance();
 
 
 

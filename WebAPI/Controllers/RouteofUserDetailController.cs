@@ -1,9 +1,9 @@
 ﻿using Business.Abstract;
-using Core.Utilities.Results.Abstract;
-using Core.Utilities.Results.Concrete;
 using Entities.Concrete;
+using Entities.DTOs;
+using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc;
-using NetTopologySuite.Geometries;
+
 
 namespace WebAPI.Controllers
 {
@@ -49,22 +49,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("add")]
-        public IActionResult Add(dynamic routeDetail)
+        [HttpGet("getroutedetailline")]
+        public IActionResult GetRouteDetailLine(int routeid)
         {
-            var items= routeDetail.data;
-            List<RouteOfUserDetail> routeOfUserDetails=new List<RouteOfUserDetail>();
-            for (int i = 0; i < items.Count; i++)
+            var result = _routeOfUserDetailService.GetRouteLine(routeid);
+            if (result.Success)
             {
-                routeOfUserDetails.Add(
-                new RouteOfUserDetail
-                {
-                    routeid = Convert.ToInt32(items[i].routeId.Value),
-                    routetime = TimeOnly.Parse(items[i].routetime.Value),
-                    route = new GeometryFactory().CreatePoint(new Coordinate(items[i].route.x.Value, items[i].route.y.Value))
-                });
+                return Ok(result);
             }
-            var result = _routeOfUserDetailService.AddList(routeOfUserDetails);
+            return BadRequest(result);
+        }
+
+        [HttpPost("add")]
+        public IActionResult Add(DtoRouteOfUser routeDetail)
+        {
+            var result = _routeOfUserDetailService.AddList(routeDetail.data);
             if (result.Success)
             {
                 return Ok(result);
@@ -73,7 +72,7 @@ namespace WebAPI.Controllers
         }
 
 
-       
+
 
     }
 }

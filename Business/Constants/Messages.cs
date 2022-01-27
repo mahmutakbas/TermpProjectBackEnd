@@ -6,14 +6,10 @@
 
         public static string UserAdded = "Kullanıcı eklendi";
         public static string UserDeleted = "Kullanıcı silindi";
+        public static string UserNotDeleted = "Kullanıcı silinemedi";
         public static string UserUpdated = "Kullanıcı güncellendi";
+        public static string UserNotUpdated = "Kullanıcı güncellenmedi";
         public static string UserList = "Kullanıcılar listesi";
-
-
-        public static string MaintenanceTime = "Sistem bakımda";
-
-        public static string FailAddedImageLimit = "Resim limiti aşıldı";
-        public static string AuthorizationDenied = "Yetkiniz yok";
 
         public static string UserRegistered = "Kayıt oldu";
         public static string UserNotFound = "Kullanıcı bulunamadı";
@@ -21,19 +17,7 @@
         public static string SuccessfulLogin = "Başarılı giriş";
         public static string UserAlreadyExists = "Kullanıcı mevcut";
 
-        public static string AccessTokenCreated = "Token oluşturuldu";
-
-        public static string CarImageAdded = "Resim başarıyla eklendi";
-        public static string CarImageDeleted = "Resim başarıyla silindi";
-        public static string CarImageUpdated = "Resim başarıyla güncellendi";
-
-        public static string PaymentGetAll = "Ödemeler listelendi";
-        public static string RentalUndeliveredCar = "Araç henüz teslim edilmedi";
-        public static string RentalListed = "Kiralamalar Lİstelendi";
-        public static string RentedCarAlreadyExists = "Bu kiralık araba zaten var";
-
-        public static string CardAdded = "Kart eklendi";
-
-        public static string CustomerUpdated = "Müşteri güncellendi";
+      
+        public static string FriendAdd = "Bu kullanıcıyı önceden eklemiştiniz.";
     }
 }

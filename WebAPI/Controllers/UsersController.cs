@@ -14,10 +14,10 @@ namespace WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet()]
+        [HttpGet("getlistusers")]
         public IActionResult GetAll()
         {
-            
+
             var result = _userService.GetAllDto();
 
             if (!result.Success)

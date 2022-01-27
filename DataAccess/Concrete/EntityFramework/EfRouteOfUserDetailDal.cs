@@ -2,28 +2,27 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfRouteOfUserDetailDal : EfEntityRepositoryBase<RouteOfUserDetail, TermProjectDbContext>, IRouteOfUserDetailDal
+    public class EfRouteOfUserDetailDal : EfEntityRepositoryBase<RouteOfUserDetail, TermProjectDbContext>//, IRouteOfUserDetailDal
     {
-        public List<DtoRouteDetail> GetRouteDetails(int routeId)
+        public List<RouteOfUserDetail> GetRouteDetails(int routeId)
         {
             using (TermProjectDbContext contex = new TermProjectDbContext())
             {
+                //   route = new UserPoint(rd.route.Coordinate.X, rd.route.Coordinate.Y),
+
                 var routeDetailList = (from rd in contex.RouteOfUserDetails
                                        where rd.routeid == routeId
-                                       select new DtoRouteDetail
+                                       select new RouteOfUserDetail
                                        {
                                            routeid = routeId,
                                            id = rd.id,
-                                           route = new UserPoint(rd.route.Coordinate.X, rd.route.Coordinate.Y),
-                                           routetime = rd.routetime.ToString("HH:mm:ss")
+
+                                           routetime = rd.routetime
                                        }).ToList();
                 return routeDetailList;
             }

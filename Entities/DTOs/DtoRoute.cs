@@ -1,6 +1,5 @@
 ﻿using Core.Entities.Abstract;
-using Entities.Concrete;
-using NetTopologySuite.Geometries;
+using GeoJSON.Net.Geometry;
 
 namespace Entities.DTOs
 {
@@ -9,8 +8,7 @@ namespace Entities.DTOs
         public int id { get; set; }
         public int userid { get; set; }
         public DateTime routestartdate { get; set; } = DateTime.UtcNow;
-        public UserPoint firstpoint { get; set; }
-
-        public UserPoint lastpoint { get; set; }
+        public Point firstpoint { get; set; }
+        public Point lastpoint { get; set; }
     }
 }

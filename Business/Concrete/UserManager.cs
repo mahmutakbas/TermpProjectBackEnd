@@ -16,35 +16,30 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
-
-        public User GetByMail(string email)
+        public IDataResult<DtoUser> GetById(int id)
         {
-            return _userDal.Get(u => u.email == email);
-        }
-
-        public IDataResult<User> GetById(int id)
-        {
-            var result = _userDal.Get(user => user.id == id);
+            var result = _userDal.GetById(id);
             if (result != null)
             {
-                return new SuccessDataResult<User>(result);
+                return new SuccessDataResult<DtoUser>(result);
             }
-            return new ErrorDataResult<User>();
+            return new ErrorDataResult<DtoUser>();
         }
-
         public IDataResult<int> Add(User user)
         {
             var result = GetExistEmail(user.email, 0);
             if (!result.Success)
-            { return new ErrorDataResult<int>(result.Message); }
+            {
+
+                return new ErrorDataResult<int>(result.Message);
+            }
             else
             {
-                _userDal.Add(user);
-                return new SuccessDataResult<int>(Messages.UserAdded);
+                int getID = _userDal.Add(user);
+                return new SuccessDataResult<int>(getID, Messages.UserAdded);
             }
 
         }
-
         public IResult Update(User user)
         {
             var result = GetExistEmail(user.email, user.id);
@@ -52,18 +47,30 @@ namespace Business.Concrete
             { return new ErrorResult(result.Message); }
             else
             {
-                _userDal.Update(user);
-                return new SuccessResult(Messages.UserUpdated);
+                int row = _userDal.Update(user);
+                if (row > 0)
+                {
+                    return new SuccessResult(Messages.UserUpdated);
+                }
+                else
+                {
+                    return new ErrorResult(Messages.UserNotUpdated);
+                }
             }
-
         }
-
         public IResult Delete(User user)
         {
-            _userDal.Delete(user);
-            return new SuccessResult(Messages.UserDeleted);
+         var result=   _userDal.Delete(user);
+            if (result > 0)
+            {
+                return new SuccessResult(Messages.UserDeleted);
+            }
+            else
+            {
+                return new ErrorResult(Messages.UserNotDeleted);
+            }
+           
         }
-
         public IDataResult<User> GetLastUser()
         {
             var lastUser = _userDal.GetAll().LastOrDefault();
@@ -71,43 +78,43 @@ namespace Business.Concrete
         }
         public IDataResult<DtoUser> Login(User user)
         {
-            var getUser = _userDal.Get(u => u.email == user.email && u.password == user.password);
+            var getUser = _userDal.GetLogin(user.email, user.password);
             if (getUser != null)
-
-                return new SuccessDataResult<DtoUser>(new DtoUser { id = getUser.id, name = getUser.name, surname = getUser.surname, email = getUser.email });
+                return new SuccessDataResult<DtoUser>(getUser);
             else
                 return new ErrorDataResult<DtoUser>();
         }
         private IResult GetExistEmail(string email, int id)
         {
-            var getUser = _userDal.GetAll(u => u.email == email);
-            if (getUser.Count == 0 || id > 0)
+            var getUser = _userDal.GetByEmail(email);
+            if (getUser.Count == 0 || id == getUser[0].id)
             {
                 return new SuccessResult();
             }
             return new ErrorResult(Messages.UserAlreadyExists);
         }
-
         public IDataResult<List<DtoUser>> GetAllDto()
         {
             var getAll = _userDal.GetDtoUsers();
             return new SuccessDataResult<List<DtoUser>>(getAll);
         }
-
         public IDataResult<List<User>> GetAll()
         {
             var getAll = _userDal.GetAll();
             return new SuccessDataResult<List<User>>(getAll);
         }
-
-        public IDataResult<List<User>> GetUsers(string mail)
+        public IDataResult<List<DtoUser>> GetUsers(string mail)
         {
-            var getUsers = _userDal.GetAll(u => u.email.ToLower().Contains(mail.ToLower()));
+            var getUsers = _userDal.GetByEmail(mail);
             if (getUsers.Count == 0)
             {
-                return new ErrorDataResult<List<User>>();
+                return new ErrorDataResult<List<DtoUser>>();
             }
-            return new SuccessDataResult<List<User>>(getUsers);
+            return new SuccessDataResult<List<DtoUser>>(getUsers);
+        }
+        public IDataResult<User> Get(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

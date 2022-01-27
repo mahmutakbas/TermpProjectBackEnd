@@ -1,5 +1,5 @@
 ﻿using Core.Entities.Abstract;
-using NetTopologySuite.Geometries;
+using GeoJSON.Net.Geometry;
 
 namespace Entities.Concrete
 {
@@ -9,7 +9,6 @@ namespace Entities.Concrete
         public int userid { get; set; }
         public DateTime routestartdate { get; set; } = DateTime.UtcNow;
         public Point firstpoint { get; set; }
-
         public Point lastpoint { get; set; }
         public bool visibility { get; set; }
     }

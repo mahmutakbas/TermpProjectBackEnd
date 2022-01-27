@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace DataAccess.Abstract
 {
-    public interface IRoutesOfUsersDal : IEntityRepository<RouteOfUser>
+    public interface IRouteOfUserDal : IDapperRepository<RouteOfUser>
     {
         List<Entities.DTOs.DtoRoute> GetRoutes(int userId);
+        List<Entities.DTOs.DtoRoute> GetOtherUserRoutes(int userId);
+        
     }
 }

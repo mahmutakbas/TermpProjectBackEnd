@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetTopologySuite.Core" Version="1.15.3" />
+    <PackageReference Include="Npgsql.GeoJSON" Version="6.0.2" />
   </ItemGroup>
 
   <ItemGroup>
