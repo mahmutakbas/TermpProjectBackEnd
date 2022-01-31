@@ -8,6 +8,7 @@ namespace DataAccess.Abstract
     {
         List<Entities.DTOs.DtoRoute> GetRoutes(int userId);
         List<Entities.DTOs.DtoRoute> GetOtherUserRoutes(int userId);
-        
+        List<Entities.DTOs.DtoRouteList> GetRouteList(int userId);
+        List<Entities.DTOs.DtoPolygonUser> GetDrawPolygon(GeoJSON.Net.Geometry.Polygon polygon);
     }
 }

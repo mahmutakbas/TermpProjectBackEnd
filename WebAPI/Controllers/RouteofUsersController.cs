@@ -27,6 +27,17 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        [HttpGet("getroutelist")]
+        public IActionResult GetRouteList(int userId)
+        {
+            var result = _routeOfUsersService.GetRouteList(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
         [HttpGet("getotheruserroutes")]
         public IActionResult GetOtherUserRoutes(int userId)
         {
@@ -43,6 +54,17 @@ namespace WebAPI.Controllers
         public IActionResult GetById(int id)
         {
             var result = _routeOfUsersService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("drawpolygon")]
+        public IActionResult DrawPolygon(GeoJSON.Net.Geometry.Polygon route)
+        {
+            var result = _routeOfUsersService.GetDrawPolygon(route); 
             if (result.Success)
             {
                 return Ok(result);

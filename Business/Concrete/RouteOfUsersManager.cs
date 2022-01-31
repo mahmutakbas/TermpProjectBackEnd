@@ -6,6 +6,7 @@ using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using GeoJSON.Net.Geometry;
 
 namespace Business.Concrete
 {
@@ -27,14 +28,14 @@ namespace Business.Concrete
             //    return new ErrorResult(Messages.BrandNameInvalid);
             //}
             //ValidationTool.Validate(new BrandValidator(), brand
-            int result= _routesOfUsersDal.Add(route);
+            int result = _routesOfUsersDal.Add(route);
             if (result <= 0)
             {
                 return new ErrorDataResult<int>(-1);
 
             }
-            return new SuccessDataResult<int>(result);    
-           
+            return new SuccessDataResult<int>(result);
+
         }
 
 
@@ -65,8 +66,8 @@ namespace Business.Concrete
         // [PerformanceAspect(5)]
         public IDataResult<RouteOfUser> GetById(int id)
         {
-         return new SuccessDataResult<RouteOfUser>(_routesOfUsersDal.Get( id));
-           
+            return new SuccessDataResult<RouteOfUser>(_routesOfUsersDal.Get(id));
+
         }
 
         public IDataResult<RouteOfUser> Get(int id)
@@ -77,6 +78,21 @@ namespace Business.Concrete
         public IDataResult<List<DtoRoute>> GetOtherUserRoutes(int userid)
         {
             return new SuccessDataResult<List<DtoRoute>>(_routesOfUsersDal.GetOtherUserRoutes(userid));
+        }
+
+        public IDataResult<List<DtoRouteList>> GetRouteList(int userid)
+        {
+            return new SuccessDataResult<List<DtoRouteList>>(_routesOfUsersDal.GetRouteList(userid));
+        }
+
+        public IDataResult<List<DtoPolygonUser>> GetDrawPolygon(Polygon polygon)
+        {
+            var result = _routesOfUsersDal.GetDrawPolygon(polygon);
+            if (result != null)
+            {
+                return new SuccessDataResult<List<DtoPolygonUser>>(result);
+            }
+            return new ErrorDataResult<List<DtoPolygonUser>>();
         }
     }
 }

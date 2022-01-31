@@ -14,5 +14,7 @@ namespace Business.Abstract
         IDataResult<List<DtoRoute>> GetRoutes(int userid);
         IDataResult<List<DtoRoute>> GetOtherUserRoutes(int userid);
         IResult Delete(RouteOfUser item);
+        IDataResult<List<DtoRouteList>> GetRouteList(int userid);
+        IDataResult<List<DtoPolygonUser>> GetDrawPolygon(GeoJSON.Net.Geometry.Polygon polygon);
     }
 }

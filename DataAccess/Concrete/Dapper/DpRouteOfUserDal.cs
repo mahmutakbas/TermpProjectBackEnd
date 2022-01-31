@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using GeoJSON.Net.Geometry;
 using Npgsql;
 using System.Collections.Generic;
 
@@ -13,10 +14,11 @@ namespace DataAccess.Concrete.Dapper
         {
             using (var con = DpTermpProcject.CreateConnection())
             {
-                using (var cmd = new NpgsqlCommand("INSERT INTO routesofusers (userid, routestartdate, firstpoint, lastpoint, visibility) VALUES ( @userid, @routestartdate, @firstpoint, @lastpoint, @visibility)", con))
+                using (var cmd = new NpgsqlCommand("INSERT INTO routesofusers (userid, routestartdate, firstpoint, lastpoint, visibility,routeenddate) VALUES ( @userid, @routestartdate, @firstpoint, @lastpoint, @visibility,@routeenddate)", con))
                 {
                     cmd.Parameters.AddWithValue("@userid", entity.userid);
                     cmd.Parameters.AddWithValue("@routestartdate", entity.routestartdate);
+                    cmd.Parameters.AddWithValue("@routeenddate", entity.routeenddate);
                     cmd.Parameters.AddWithValue("@firstpoint", entity.firstpoint);
                     cmd.Parameters.AddWithValue("@lastpoint", entity.lastpoint);
                     cmd.Parameters.AddWithValue("@visibility", true);
@@ -55,6 +57,36 @@ namespace DataAccess.Concrete.Dapper
             }
         }
 
+        public List<DtoPolygonUser> GetDrawPolygon(Polygon polygon)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                using (var cmd = new NpgsqlCommand("SELECT u.name,u.surname,u.email,rd.routetime,r.routestartdate,rd.route FROM public.routeofuserdetails as rd INNER JOIN public.routesofusers as r ON rd.routeid = r.id INNER JOIN public.users as u ON u.id = r.userid WHERE  ST_DWithin(@polygon, rd.route, 0)", con))
+                {
+                    cmd.Parameters.AddWithValue("@polygon", polygon);
+                    NpgsqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<DtoPolygonUser> users = new List<DtoPolygonUser>();
+                        while (reader.Read())
+                        {
+                            users.Add(new DtoPolygonUser
+                            {
+                                name = reader.GetString(0),
+                                surname = reader.GetString(1),
+                                email = reader.GetString(2),
+                                routetime = reader.GetTimeSpan(3),
+                                route = (Point)reader.GetValue(5),
+                                routestartdate = reader.GetDateTime(4).ToUniversalTime()
+                            });
+                        }
+                        return users;
+                    }
+                }
+                return null;
+            }
+        }
+
         public List<DtoRoute> GetOtherUserRoutes(int userId)
         {
             using (var con = DpTermpProcject.CreateConnection())
@@ -64,11 +96,20 @@ namespace DataAccess.Concrete.Dapper
             }
         }
 
+        public List<DtoRouteList> GetRouteList(int userId)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                var result = con.Query<DtoRouteList>("SELECT  r.id ,r.routestartdate , (max(rd.routetime)-min(rd.routetime)) as rTime,ST_Length(st_makeline(Array(Select  rd.route::geometry from public.routeofuserdetails as rd where rd.routeid=r.id)),false)/1000 as Km FROM public.routesofusers AS r INNER JOIN public.routeofuserdetails AS rd ON r.id = rd.routeid  where r.userid=@userId group by r.id;", new { userId = userId }).AsList();
+                return result;
+            }
+        }
+
         public List<DtoRoute> GetRoutes(int userId)
         {
             using (var con = DpTermpProcject.CreateConnection())
             {
-                var result = con.Query<DtoRoute>("SELECT * FROM routesofusers WHERE userid=@userId;", new { userId=userId}).AsList();
+                var result = con.Query<DtoRoute>("SELECT * FROM routesofusers WHERE userid=@userId;", new { userId = userId }).AsList();
                 return result;
             }
         }

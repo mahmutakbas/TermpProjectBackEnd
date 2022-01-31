@@ -7,7 +7,8 @@ namespace Entities.Concrete
     {
         public int id { get; set; }
         public int userid { get; set; }
-        public DateTime routestartdate { get; set; } = DateTime.UtcNow;
+        public DateTime routestartdate { get; set; }
+        public DateTime routeenddate { get; set; }
         public Point firstpoint { get; set; }
         public Point lastpoint { get; set; }
         public bool visibility { get; set; }

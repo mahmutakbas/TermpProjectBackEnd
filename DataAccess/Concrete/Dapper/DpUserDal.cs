@@ -72,7 +72,7 @@ namespace DataAccess.Concrete.Dapper
         {
             using (var con = DpTermpProcject.CreateConnection())
             {
-                var result = con.Query<DtoUser>("SELECT * FROM users;").AsList();
+                var result = con.Query<DtoUser>("SELECT * FROM users where users.email<>'admin@admin.com';").AsList();
                 return result;
             }
         }
