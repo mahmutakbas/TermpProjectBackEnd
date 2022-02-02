@@ -59,6 +59,16 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        [HttpGet("getroutedetaillines")]
+        public IActionResult GetRouteDetailLines(int userId)
+        {
+            var result = _routeOfUserDetailService.GetRouteDetailLines(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
         [HttpPost("add")]
         public IActionResult Add(DtoRouteOfUser routeDetail)

@@ -90,7 +90,7 @@ namespace DataAccess.Concrete.Dapper
         {
             using (var con = DpTermpProcject.CreateConnection())
             {
-                var result = con.QuerySingle<DtoUser>("SELECT * FROM users WHERE email=@email and password=@password;",new { email=email,password=password});
+                var result = con.QuerySingleOrDefault<DtoUser>("SELECT * FROM users WHERE email=@email and password=@password;",new { email=email,password=password});
                 return result;
             }
         }

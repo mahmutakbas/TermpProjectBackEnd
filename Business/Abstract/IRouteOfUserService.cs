@@ -15,6 +15,10 @@ namespace Business.Abstract
         IDataResult<List<DtoRoute>> GetOtherUserRoutes(int userid);
         IResult Delete(RouteOfUser item);
         IDataResult<List<DtoRouteList>> GetRouteList(int userid);
-        IDataResult<List<DtoPolygonUser>> GetDrawPolygon(GeoJSON.Net.Geometry.Polygon polygon);
+        IDataResult<List<DtoPolygonUser>> GetSearchDWithin(DtoDrawPolygon polygon);
+        IDataResult<List<DtoPolygonUser>> GetSearchContains(DtoDrawPolygon polygon);
+        IDataResult<List<DtoPolygonUser>> GetSearchIntersect(DtoDrawPolygon polygon);
+        IDataResult<List<DtoPolygonUser>> GetSearchDistance(DtoDrawPolygon polygon);
+        IDataResult<List<DtoUserLine>> GetSearchLine(DtoFilter item);
     }
 }

@@ -16,5 +16,6 @@ namespace Business.Abstract
         IDataResult<List<RouteOfUserDetail>> GetRouteDetails(int routeId);
         IResult Delete(int routeId);
         IDataResult<DtoPointsLine> GetRouteLine(int routeId);
+        IDataResult< List<DtoUserLine>> GetRouteDetailLines(int userId);
     }
 }

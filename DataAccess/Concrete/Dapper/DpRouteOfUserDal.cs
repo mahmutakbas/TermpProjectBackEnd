@@ -56,14 +56,71 @@ namespace DataAccess.Concrete.Dapper
                 return result;
             }
         }
-
-        public List<DtoPolygonUser> GetDrawPolygon(Polygon polygon)
+        public List<DtoPolygonUser> GetSearchDWithin(Polygon item,string query)
         {
             using (var con = DpTermpProcject.CreateConnection())
             {
-                using (var cmd = new NpgsqlCommand("SELECT u.name,u.surname,u.email,rd.routetime,r.routestartdate,rd.route FROM public.routeofuserdetails as rd INNER JOIN public.routesofusers as r ON rd.routeid = r.id INNER JOIN public.users as u ON u.id = r.userid WHERE  ST_DWithin(@polygon, rd.route, 0)", con))
+                using (var cmd = new NpgsqlCommand("SELECT u.name,u.surname,u.email,rd.routetime,r.routestartdate,rd.route FROM public.routeofuserdetails as rd INNER JOIN public.routesofusers as r ON rd.routeid = r.id INNER JOIN public.users as u ON u.id = r.userid WHERE ST_DWithin(@polygon, rd.route,  "+query, con))
                 {
-                    cmd.Parameters.AddWithValue("@polygon", polygon);
+                    cmd.Parameters.AddWithValue("@polygon", item);
+                    NpgsqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<DtoPolygonUser> users = new List<DtoPolygonUser>();
+                        while (reader.Read())
+                        {
+                            users.Add(new DtoPolygonUser
+                            {
+                                name = reader.GetString(0),
+                                surname = reader.GetString(1),
+                                email = reader.GetString(2),
+                                routetime = reader.GetTimeSpan(3),
+                                route = (Point)reader.GetValue(5),
+                                routestartdate = reader.GetDateTime(4).ToUniversalTime()
+                            });
+                        }
+                        return users;
+                    }
+                }
+                return null;
+            }
+        }
+        public List<DtoPolygonUser> GetSearchContains(Polygon item, string query)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                using (var cmd = new NpgsqlCommand("SELECT u.name,u.surname,u.email,rd.routetime,r.routestartdate,rd.route FROM public.routeofuserdetails as rd INNER JOIN public.routesofusers as r ON rd.routeid = r.id INNER JOIN public.users as u ON u.id = r.userid WHERE ST_Contains(@polygon::geometry,rd.route::geometry)  " + query, con))
+                {
+                    cmd.Parameters.AddWithValue("@polygon", item);
+                    NpgsqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<DtoPolygonUser> users = new List<DtoPolygonUser>();
+                        while (reader.Read())
+                        {
+                            users.Add(new DtoPolygonUser
+                            {
+                                name = reader.GetString(0),
+                                surname = reader.GetString(1),
+                                email = reader.GetString(2),
+                                routetime = reader.GetTimeSpan(3),
+                                route = (Point)reader.GetValue(5),
+                                routestartdate = reader.GetDateTime(4).ToUniversalTime()
+                            });
+                        }
+                        return users;
+                    }
+                }
+                return null;
+            }
+        }
+        public List<DtoPolygonUser> GetSearchIntersect(Polygon item, string query)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                using (var cmd = new NpgsqlCommand("SELECT u.name,u.surname,u.email,rd.routetime,r.routestartdate,rd.route FROM public.routeofuserdetails as rd INNER JOIN public.routesofusers as r ON rd.routeid = r.id INNER JOIN public.users as u ON u.id = r.userid WHERE ST_Intersects(@polygon, rd.route) " + query, con))
+                {
+                    cmd.Parameters.AddWithValue("@polygon", item);
                     NpgsqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                     {
@@ -87,6 +144,47 @@ namespace DataAccess.Concrete.Dapper
             }
         }
 
+        public List<DtoPolygonUser> GetSearchDistance(Polygon item, string query)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                using (var cmd = new NpgsqlCommand("SELECT u.name,u.surname,u.email,rd.routetime,r.routestartdate,rd.route FROM public.routeofuserdetails as rd INNER JOIN public.routesofusers as r ON rd.routeid = r.id INNER JOIN public.users as u ON u.id = r.userid WHERE ST_DISTANCE(@polygon::geometry,rd.route::geometry)*1000>  " + query, con))
+                {
+                    cmd.Parameters.AddWithValue("@polygon", item);
+                    NpgsqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<DtoPolygonUser> users = new List<DtoPolygonUser>();
+                        while (reader.Read())
+                        {
+                            users.Add(new DtoPolygonUser
+                            {
+                                name = reader.GetString(0),
+                                surname = reader.GetString(1),
+                                email = reader.GetString(2),
+                                routetime = reader.GetTimeSpan(3),
+                                route = (Point)reader.GetValue(5),
+                                routestartdate = reader.GetDateTime(4).ToUniversalTime()
+                            });
+                        }
+                        return users;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public List<DtoUserLine> GetSearchLine(string filter)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                string query = $"SELECT rd.routeid as id,s.name AS Name,s.surname AS Surname ,s.email AS Email,r.firstpoint AS FirstPoint,r.lastpoint AS LastPoint,r.routestartdate AS RouteStartDate,ST_MakeLine(rd.route::geometry) As Yol FROM public.routeofuserdetails As rd  inner join public.routesofusers as r on rd.routeid = r.id inner join public.users As s on r.userid = s.id  {filter}  GROUP BY rd.routeid,s.name,s.surname,s.email,r.firstpoint,r.lastpoint,r.routestartdate; ";
+                var result = con.Query<DtoUserLine>(query).AsList();
+                return result;
+            }
+            
+           
+        }
         public List<DtoRoute> GetOtherUserRoutes(int userId)
         {
             using (var con = DpTermpProcject.CreateConnection())

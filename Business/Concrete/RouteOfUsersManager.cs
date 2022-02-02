@@ -1,12 +1,9 @@
 ﻿using Business.Abstract;
-using Business.ValidationRules.FluentValidation;
-using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
-using GeoJSON.Net.Geometry;
 
 namespace Business.Concrete
 {
@@ -19,15 +16,8 @@ namespace Business.Concrete
             _routesOfUsersDal = routesOfUsersDal;
         }
 
-        [ValidationAspect(typeof(BrandValidator))]
         public IDataResult<int> Add(RouteOfUser route)
         {
-            //bu kısmı fluent validator tarafına devrettim
-            //if (brand.BrandName.Length <= 2)
-            //{
-            //    return new ErrorResult(Messages.BrandNameInvalid);
-            //}
-            //ValidationTool.Validate(new BrandValidator(), brand
             int result = _routesOfUsersDal.Add(route);
             if (result <= 0)
             {
@@ -45,7 +35,6 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        [ValidationAspect(typeof(BrandValidator))]
         public IResult Update(RouteOfUser route)
         {
             _routesOfUsersDal.Update(route);
@@ -84,15 +73,112 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<DtoRouteList>>(_routesOfUsersDal.GetRouteList(userid));
         }
-
-        public IDataResult<List<DtoPolygonUser>> GetDrawPolygon(Polygon polygon)
+        private string stringSub(string item, string add)
         {
-            var result = _routesOfUsersDal.GetDrawPolygon(polygon);
+            var newitem = item.Substring(0, item!.Length - 2);
+
+            return newitem + add;
+        }
+
+        public IDataResult<List<DtoPolygonUser>> GetSearchDWithin(DtoDrawPolygon item)
+        {
+            var result = _routesOfUsersDal.GetSearchDWithin(item.PUser, item.PointLength + ",true) " + QueryTime(item));
             if (result != null)
             {
                 return new SuccessDataResult<List<DtoPolygonUser>>(result);
             }
             return new ErrorDataResult<List<DtoPolygonUser>>();
+        }
+
+        public IDataResult<List<DtoPolygonUser>> GetSearchContains(DtoDrawPolygon item)
+        {
+            var result = _routesOfUsersDal.GetSearchContains(item.PUser, QueryTime(item));
+            if (result != null)
+            {
+                return new SuccessDataResult<List<DtoPolygonUser>>(result);
+            }
+            return new ErrorDataResult<List<DtoPolygonUser>>();
+        }
+
+        public IDataResult<List<DtoPolygonUser>> GetSearchIntersect(DtoDrawPolygon item)
+        {
+            var result = _routesOfUsersDal.GetSearchIntersect(item.PUser, QueryTime(item));
+            if (result != null)
+            {
+                return new SuccessDataResult<List<DtoPolygonUser>>(result);
+            }
+            return new ErrorDataResult<List<DtoPolygonUser>>();
+        }
+        public IDataResult<List<DtoPolygonUser>> GetSearchDistance(DtoDrawPolygon item)
+        {
+            var result = _routesOfUsersDal.GetSearchDistance(item.PUser, item.PointLength + QueryTime(item));
+            if (result != null)
+            {
+                return new SuccessDataResult<List<DtoPolygonUser>>(result);
+            }
+            return new ErrorDataResult<List<DtoPolygonUser>>();
+        }
+        private string QueryTime(DtoDrawPolygon item)
+        {
+            string query = "";
+            if (item.Dates.Length > 0 && item.Dates[0] != "")
+            {
+                if (item.OnlyTime)
+                {
+                    if (item.OnlyADate)
+                    {
+                        query = string.Format(" AND (rd.routetime BETWEEN '{0}' AND '{1}') order by rd.route asc", TimeSpan.Parse(item.Dates[0] + ":00"), TimeSpan.Parse(item.Dates[0] + ":59"));
+                    }
+                    else
+                    {
+                        query = string.Format(" AND (rd.routetime BETWEEN '{0}' AND '{1}') order by rd.route asc", TimeSpan.Parse(item.Dates[0] + ":00"), TimeSpan.Parse(item.Dates[1] + ":59"));
+                    }
+
+                }
+                if (item.OnlyDate)
+                {
+                    if (item.OnlyADate)
+                    {
+                        query = $" AND (r.routestartdate BETWEEN '{DateTime.Parse(item.Dates[0] + " 00:00:00")}' AND '{DateTime.Parse(item.Dates[0] + " 23:59:59")}' OR r.routeenddate BETWEEN '{DateTime.Parse(item.Dates[0] + " 00:00:00")}' AND '{DateTime.Parse(item.Dates[0] + " 23:59:59")}') ";
+                    }
+                    else
+                    {
+                        query = $" AND (r.routestartdate BETWEEN '{DateTime.Parse(item.Dates[0] + " 00:00:00")}' AND '{DateTime.Parse(item.Dates[1] + " 23:59:59")}' OR r.routeenddate BETWEEN '{DateTime.Parse(item.Dates[0] + " 00:00:00")}' AND '{DateTime.Parse(item.Dates[1] + " 23:59:59")}') ";
+                    }
+                }
+                if (!item.OnlyTime && !item.OnlyDate)
+                {
+                    if (item.OnlyADate)
+                    {
+                        query = $" AND (r.routestartdate BETWEEN '{DateTime.Parse(stringSub(item.Dates[0], "00"))}' AND  '{DateTime.Parse(stringSub(item.Dates[0], "59"))}' OR r.routeenddate BETWEEN '{DateTime.Parse(stringSub(item.Dates[0], "00"))}' AND  '{DateTime.Parse(stringSub(item.Dates[0], "59"))}') ";
+                    }
+                    else
+                    {
+                        query = $" AND (r.routestartdate BETWEEN '{DateTime.Parse(stringSub(item.Dates[0], "00"))}' AND  '{DateTime.Parse(stringSub(item.Dates[1], "59"))}' OR r.routeenddate BETWEEN '{DateTime.Parse(stringSub(item.Dates[0], "00"))}' AND  '{DateTime.Parse(stringSub(item.Dates[1], "59"))}') ";
+                    }
+                }
+            }
+            return query;
+        }
+
+        public IDataResult<List<DtoUserLine>> GetSearchLine(DtoFilter item)
+        {
+            string query = QueryTime(new DtoDrawPolygon { Dates = item.Dates, OnlyTime = item.OnlyTime, OnlyADate = item.OnlyADate, OnlyDate = item.OnlyDate });
+            List<DtoUserLine> result;
+            if (query.Length > 4)
+            {
+                result = _routesOfUsersDal.GetSearchLine(" WHERE "+query.Remove(0,4));
+            }
+            else
+            {
+                result = _routesOfUsersDal.GetSearchLine("");
+            }
+
+            if (result != null)
+            {
+                return new SuccessDataResult<List<DtoUserLine>>(result);
+            }
+            return new ErrorDataResult<List<DtoUserLine>>();
         }
     }
 }

@@ -55,6 +55,11 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
+        public IDataResult<List<DtoUserLine>> GetRouteDetailLines(int userId)
+        {
+            return new SuccessDataResult<List<DtoUserLine>>(_routeOfUserDetailDal.GetRouteDetailLines(userId));
+        }
+
         public IDataResult<List<RouteOfUserDetail>> GetRouteDetails(int routeId)
         {
             var result = _routeOfUserDetailDal.GetRouteDetails(routeId);

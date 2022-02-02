@@ -61,10 +61,31 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("drawpolygon")]
-        public IActionResult DrawPolygon(GeoJSON.Net.Geometry.Polygon route)
+        [HttpPost("getsearchdwithin")]
+        public IActionResult GetSearchDWithin(DtoDrawPolygon route)
         {
-            var result = _routeOfUsersService.GetDrawPolygon(route); 
+          
+            var result = _routeOfUsersService.GetSearchDWithin(route); 
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost("getsearchcontains")]
+        public IActionResult GetSearchContains(DtoDrawPolygon route)
+        {
+            var result = _routeOfUsersService.GetSearchContains(route);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost("getsearchintersect")]
+        public IActionResult GetSearchIntersect(DtoDrawPolygon route)
+        {
+            var result = _routeOfUsersService.GetSearchIntersect(route);
             if (result.Success)
             {
                 return Ok(result);
@@ -72,6 +93,28 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("getsearchdistance")]
+        public IActionResult GetSearchDistance(DtoDrawPolygon route)
+        {
+
+            var result = _routeOfUsersService.GetSearchDistance(route);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost("getsearchline")]
+        public IActionResult GetSearchLine(DtoFilter route)
+        {
+
+            var result = _routeOfUsersService.GetSearchLine(route) ;
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
         [HttpPost("add")]
         public IActionResult Add(RouteOfUser route)
         {

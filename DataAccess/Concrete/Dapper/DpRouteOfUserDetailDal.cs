@@ -6,6 +6,7 @@ using GeoJSON.Net.Geometry;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataAccess.Concrete.Dapper
 {
@@ -52,7 +53,7 @@ namespace DataAccess.Concrete.Dapper
                 return result;
             }
         }
-
+        //Todo : Bu query değişecek
         public DtoPointsLine GetRouteDetailLine(int routeId)
         {
             using (var con = DpTermpProcject.CreateConnection())
@@ -61,6 +62,15 @@ namespace DataAccess.Concrete.Dapper
                 return result;
             }
         }
+        public List<DtoUserLine> GetRouteDetailLines(int userId)
+        {
+            using (var con = DpTermpProcject.CreateConnection())
+            {
+                var result = con.Query<DtoUserLine>("SELECT s.name AS Name,s.surname AS Surname ,s.email AS Email,r.firstpoint AS FirstPoint,r.lastpoint AS LastPoint,r.routestartdate AS RouteStartDate,ST_MakeLine(rd.route::geometry) As Yol FROM public.routeofuserdetails As rd  inner join public.routesofusers as r on rd.routeid = r.id inner join public.users As s on r.userid = s.id Where r.userid = @userId GROUP BY rd.routeid, s.name, s.surname, s.email, r.firstpoint, r.lastpoint, r.routestartdate; ", new { userId = userId }).ToList();
+                return result;
+            }
+        }
+
         public List<RouteOfUserDetail> GetRouteDetails(int routeId)
         {
             using (var con = DpTermpProcject.CreateConnection())
